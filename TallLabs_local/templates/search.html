@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <title> The Emoji Thesaurus </title>
+  <meta charset="utf-8" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.css" rel="stylesheet" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.js"></script>
+    <script src="https://rawgit.com/gka/d3-jetpack/master/d3-jetpack.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link 
+ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+ rel="stylesheet"
+integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" 
+ crossorigin="anonymous"
+>
+
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<! link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />
+	<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+   <script src="//d3js.org/d3.v3.min.js"></script>
+           <link href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.js"></script>
+   <style type="text/css">
+   body { font-family:  Helvetica, 'Apple Color Emoji', 'Helvetica Neue'; font-weight: 300;}
+    th { text-align: center; }
+    th, td { padding: 0 1em 0.5ex 0;}
+    th.center, td.center { text-align: center; }
+    th.num, td.num { text-align: right; }
+   html {
+   -ms-text-size-adjust: 100%; 
+   -webkit-text-size-adjust: 100%;
+   }
+   #chart svg {
+  font-size: 50px;
+   }
+    textarea {
+    font-size: 16pt;
+    font-family:  Arial;
+    }
+    svg text {
+     font: normal 50px Impact;
+    }
+    div text {
+     font: normal 50px Impact;
+    }
+    .nv-label text{
+    font-size: 50px;
+    }
+    ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+   }
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: red;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+    </style> 
+  <script type=text/javascript>
+    $(function() {
+      $('#item_select').bind('click', function() {
+        $.getJSON('/_update_item', {
+           asin: $('select[id="item_select"]').val()
+        }, function(data) {
+          $("#img_path").attr("src", data.image),
+          $("#title").text(data.title),
+          $("#desc").text(data.desc),
+          $("#revs").text(data.revs),
+          $("#prod_title").text(data.title),
+          $("#result").text(""),
+          $("#about").text(""),
+          document.getElementById('ques').value = data.ques;
+        });
+        return false;
+      });
+    $('#Go').bind('click', function() {
+        $.getJSON('/_process_question', {
+           question: $('textarea[name="q_text"]').val(),
+           asin: $('select[id="item_select"]').val()
+        }, function(data) {
+          $("#result").text(data.result),
+          $("#about").text(data.about),
+          $("#sim").text(data.similar)
+        });
+        return false;
+      });
+    });
+  </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+<ul>
+  <li><a class="active" href="/">Force Diagram</a></li>
+  <li><a href="/tree">Tree Diagram</a></li>
+  <li><a href="/train">Training</a></li>
+</ul>
+        <h3 class="text-muted">Ask a Product Question
+
+		<select id="item_select" name="item_sel" onchange="window.onload();" style="color:white;background-color:green;font-size:11pt;float:right;">
+		  <option value="B0009H2M1Y">Motorola Mini USB Wall Charger</option>
+		  <option value="B0002WRGHG">Motorola HS820 Bluetooth Headset</option>
+		  <option value="B00002X29G">Stanley 6-Piece Precision Screwdriver Set</option>
+		  <option value="8288878881">Samsung Galaxy S2 Phone Travel USB Charger</option>
+		</select>
+	<font size="4">
+	 <label style="float:right;">
+        Select Item: 
+      </label>
+     </font>
+	</h3> 
+
+
+      <hr/>
+      <h6> <center>
+     </h6>
+     
+<div class="container" id="product-section">
+  <div class="row">
+   <div class="col-md-3">
+    <img
+  id="img_path"
+  src=""
+  alt="Kodak Brownie Flash B Camera"
+  class="image-responsive"
+  height= "100%;"
+  width= "100%;"
+ />    
+   </div>
+   
+   <div class="col-md-8">
+   
+        <label  style="display: inline-block; width: 20; text-align: right; font-size:12pt;">
+        Search:
+     </label></br>
+        <textarea id="ques" name="q_text" rows="2" cols="50"> </textarea>
+     <a class="btn btn-lg btn-success" id="Go" role="button">Go</a>
+     </br>
+    <label  id="result_label" style="display: inline-block; width: 20; text-align: right; font-size:12pt;">
+        Most Relavent Responses:
+     </label>
+     <pre class="box" id="result" style="font-size:14pt;background-color: #efffe0;"></pre>
+     <label style="font-size:14px;"><input type="checkbox" id="cbox1" value="none" onclick="check_box_click();" >Show Algorithm Info</label>
+     </br>
+    <label  id="about_label" style="display: inline-block; width: 20; text-align: right; font-size:12pt;">
+        Under The Hood:
+     </label>
+     <pre class="box" id="about" style="font-size:14pt; background-color:#ffffe0;"></pre>
+    </br>
+    <label  id="sim_label" style="display: inline-block; width: 20; text-align: right; font-size:12pt;">
+        Similar Product Reviews:
+     </label>
+     <pre class="box" id="sim" style="font-size:14pt; background-color:#ffffe0;"></pre>
+
+   </div>
+  </div><!-- end row -->
+ </div><!-- end container -->
+ 
+ <div class="row">
+ <div class="col-md-12">
+  <p class="description" id="prod_title">
+   </p>
+    <h4> Product Description</h4>
+   <pre class="box" id="desc" style="font-size:10pt"></pre>
+    <h4> Product Reviews</h4>
+   <pre class="box" id="revs" style="font-size:10pt"></pre>
+ </div>
+</div><!-- end row -->
+
+</body>
+</html>
+<script>
+
+function check_box_click(){
+    if(document.getElementById("cbox1").checked){
+    	document.getElementById("about").style.visibility = "visible";
+    	document.getElementById("about").style.display = "block";
+    	document.getElementById("about_label").style.visibility = "visible";
+    }
+    else
+    {	
+    document.getElementById("about").style.visibility = "hidden";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("about_label").style.visibility = "hidden";
+    }
+}
+
+
+    
+window.onload = function(){
+check_box_click()
+document.getElementsByName("item_sel")[0].click();}
+</script>

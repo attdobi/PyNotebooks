@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <title> The Emoji Thesaurus </title>
+  <meta charset="utf-8" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.css" rel="stylesheet" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.js"></script>
+    <script src="https://rawgit.com/gka/d3-jetpack/master/d3-jetpack.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+          rel="stylesheet">
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<! link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />
+	<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+   <script src="//d3js.org/d3.v3.min.js"></script>
+           <link href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.js"></script>
+   <style type="text/css">
+   body { font-family:  Helvetica, 'Apple Color Emoji', 'Helvetica Neue'; font-weight: 300;}
+    th { text-align: center; }
+    th, td { padding: 0 1em 0.5ex 0;}
+    th.center, td.center { text-align: center; }
+    th.num, td.num { text-align: right; }
+   html {
+   -ms-text-size-adjust: 100%; 
+   -webkit-text-size-adjust: 100%;
+   }
+   #chart svg {
+  font-size: 50px;
+   }
+    textarea {
+    font-size: 16pt;
+    font-family:  Arial;
+    }
+    svg text {
+     font: normal 50px Impact;
+    }
+    div text {
+     font: normal 50px Impact;
+    }
+    .nv-label text{
+    font-size: 50px;
+    }
+    ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+   }
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: red;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+    </style> 
+  <script type=text/javascript>
+    $(function() {
+      $('#YesNo').bind('click', function() {
+        $.getJSON('/_train', {
+           a: 'yes/no',
+           name: $('input[name="name_in"]').val()
+        }, function(data) {
+          $("#result").text(data.result);
+          make_graph();
+          make_table();
+        });
+        return false;
+      });
+    $('#OE').bind('click', function() {
+        $.getJSON('/_train', {
+           a: 'open-ended',
+           name: $('input[name="name_in"]').val()
+        }, function(data) {
+          $("#result").text(data.result);
+          make_graph();
+          make_table();
+        });
+        return false;
+      });
+    $('#unknown').bind('click', function() {
+        $.getJSON('/_train', {
+           a: 'unknown',
+           name: $('input[name="name_in"]').val()
+        }, function(data) {
+          $("#result").text(data.result);
+          make_graph();
+          make_table();
+        });
+        return false;
+      });
+    });
+  </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+<ul>
+  <li><a class="active" href="/force">Force Diagram</a></li>
+  <li><a href="/tree">Tree Diagram</a></li>
+  <li><a href="/train">Training</a></li>
+</ul>
+        <h3 class="text-muted">Q/A Training
+      </h3> 
+        
+      <hr/>
+      <center><pre class="box" id="result" style="font-size:12pt"></center> </pre>
+      <!<textarea id="result" rows="30" cols="70"><!</textarea>
+      </div>
+      <h6> <center> What type of question is this? </center></h6>
+      <h6> <center>
+     <a class="btn btn-lg btn-success" id="YesNo" role="button">Yes/No</a>
+     <a class="btn btn-lg btn-success" id="OE" role="button">open-ended</a>
+     <a class="btn btn-lg btn-success" id="unknown" role="button">¯\_(ツ)_/¯🦄 </a>
+       </center>
+      <input type = "text" name= "name_in" value = "" style="float:right;" />
+             <font size="3"><label for="name"
+          style="display: inline-block; width: 50px; float:right;">
+        Name:
+      </label></fontsize>
+     
+</h6>
+<hr/>
+    
+    <div id="multibarchart" style="float:left; margin: 20px;"><svg style="width:800px;height:300"
+  preserveAspectRatio=""xMidYMid"></svg></div>
+   <div id="table" style="font-size:16pt; float:right;"></div></div>
+    
+   <script>
+
+// the table rows
+    // column definitions
+    var columns = [
+        { head: 'Rank', cl: 'center', html: ƒ('rank') },
+        { head: 'Name', cl: 'title', html: ƒ('label') },
+        { head: 'Count', cl: 'center', html: ƒ('value') },
+    ];
+
+
+function initiallize() {
+        $.getJSON('/_train', {
+           a: 'start'
+        }, function(data) {
+          $("#result").text(data.result);
+        });}
+        
+function make_graph() {
+ var URL_BASE = "/_train_plot";
+
+d3.json(URL_BASE, function(error, data) {
+
+  data_multibarchart = data.result;
+   
+    nv.addGraph(function() {
+        var chart = nv.models.multiBarChart()
+        .barColor(d3.scale.category10().range());
+
+        chart.margin({top: 5, right: 60, bottom: 20, left: 60})
+        .forceY(0,100);
+        
+        var datum = data_multibarchart;
+
+            chart.yAxis
+                .tickFormat(d3.format(',.2f'));
+                
+
+
+      chart.showLegend(true);
+
+        d3.select('#multibarchart svg')
+            .datum(datum)
+            .transition().duration(500)
+            .attr('width', 800)
+            .attr('height', 300)
+            .call(chart);
+
+    });
+
+});//end get data
+
+}//end make graph
+
+function make_table() {
+   var URL_BASE = "/_train_table";
+  
+  d3.json(URL_BASE, function(error, data) {
+    var fmt = d3.format("d");
+    var datum = data.values;
+    
+    nv.addGraph(function() {
+// create table
+	//Clear previous table
+	d3.selectAll("#table > *").remove();
+    var table = d3.select('#table');
+     
+    // create table header
+    var header=table.append("thead")
+        .selectAll('th');
+        
+        //header.data(data).exit().remove();
+    
+        header
+        .data(columns).enter()
+        .append('th')
+        .attr('class', ƒ('cl'))
+        .text(ƒ('head'));
+
+    // create table body
+    var body = table.append("tbody")
+        .selectAll('tr');
+    
+        body
+        .data(datum).enter()
+        .append('tr')
+        .selectAll('td')
+        .data(function(row, i) {
+            return columns.map(function(c) {
+                // compute cell values for this specific row
+                var cell = {};
+                d3.keys(c).forEach(function(k) {
+                    cell[k] = typeof c[k] == 'function' ? c[k](row,i) : c[k];
+                });
+                return cell;
+            });
+        }).enter()
+        .append('td')
+        .html(ƒ('html'))
+        .attr('class', ƒ('cl'));
+
+		table.selectAll("th").style("background-color", "#D8D8D8");
+		table.selectAll("tr").style("background-color", function(d, i){
+     				if(i%2 == 1){
+     					return "#D8D8D8";
+     				}
+     			})
+
+        
+        });
+    });
+}//end make table
+
+make_graph()
+make_table()
+initiallize()
+
+        
+</script>
+

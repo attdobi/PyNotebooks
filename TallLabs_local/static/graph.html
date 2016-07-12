@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head >
+        <meta charset="utf-8" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.css" rel="stylesheet" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+          rel="stylesheet">
+   <style type="text/css">
+	textarea {
+   	font-size: 16pt;
+   	font-family: Arial;
+	}
+    </style> 
+          
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.js"></script>
+    </head>
+<body>
+    <div class="container">
+      <div class="header">
+        <h3 class="text-muted">Emojify with JSON</h3>
+      </div>
+      <hr/>
+      
+       <input type = "text"
+       id = "word"
+       value = "Search"
+      onkeypress="if (event.keyCode==13){make_graph()};"
+/>
+
+<div id="piechart"><svg style="width:600px;height:600px;"></svg></div>
+
+
+<script>
+    
+var URL_BASE = "http://localhost:5000/db/";
+
+// Update graph in response to inputs 
+//this updates continuously
+//d3.select("#word").on("input", make_graph);
+
+// Return url to recieve csv data with query filled in from input fields
+function update_url() {
+  return URL_BASE +"?word=" + document.getElementById("word").value;
+}
+
+// Convert csv data to number types
+function type(d) {
+  d.emoji = d.emoji;
+  d.frequency = +d.frequency;
+  return d;
+}
+
+    
+function make_graph() {
+  //update_slider(+document.getElementById("time").value);
+  url = update_url()
+  
+  // load data
+//  d3.json(url, function(data) {
+    //y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+  //   });
+   //window.alert(error);
+
+//Get list of current users
+d3.json(url, function(error, data) {
+
+    //[{"values": [{"value": 147, "label": "\ud83d\ude02"}, {"value": 71, "label": "\ud83d\udc36"}, {"value": 34, "label": "\ud83d\ude2d"}, {"value": 33, "label": "\ud83d\ude0a"}, {"value": 19, "label": "\ud83d\ude0d"}, {"value": 14, "label": "\u2764\ufe0f"}, {"value": 11, "label": "\u2728"}, {"value": 10, "label": "\ud83d\udc80"}, {"value": 9, "label": "\ud83d\udc4f"}, {"value": 9, "label": "\ud83d\ude29"}, {"value": 9, "label": "\ud83d\udc95"}, {"value": 8, "label": "\ud83d\ude05"}, {"value": 7, "label": "\ud83d\ude44"}, {"value": 7, "label": "\ud83d\ude39"}, {"value": 6, "label": "\ud83d\udc3e"}], "key": "Serie 1"}];
+
+    nv.addGraph(function() {
+        var chart = nv.models.pieChart();
+        chart.margin({top: 30, right: 60, bottom: 20, left: 60});
+        var datum = data.values;
+        //var datum = data_piechart;
+
+        chart.color(d3.scale.category20c().range());
+
+    chart.tooltipContent(function(key, y, e, graph) {
+          var x = String(key);
+              var y =  String(y) +'';
+
+              tooltip_str = '<center><b>'+x+'</b></center>' + y;
+              return tooltip_str;
+              });
+        chart.showLabels(true);
+
+            chart.donut(false);
+
+    chart.showLegend(true);
+
+        chart
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.value });
+
+        chart.width(600);
+
+        chart.height(600);
+
+
+            d3.select('#piechart svg')
+            .datum(datum)
+            .transition().duration(500)
+            .attr('width', 600)
+            .attr('height', 600)
+            .call(chart);
+        
+            //increase fontsize
+            d3.selectAll(".nv-label text")
+            .attr("text-anchor", "middle")
+            .style({"font-size": "50px"});
+            //.attr('transform', 'scale(1.5) translate(-5,0)');
+            
+            //select legend
+            d3.selectAll(".nv-legendWrap")
+            .style({"font-size": "50px"});
+        });
+    });
+    
+}
+make_graph();
+
+    </script>
+</html>
+    

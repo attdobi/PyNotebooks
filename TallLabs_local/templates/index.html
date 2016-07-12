@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <title> The Emoji Thesaurus </title>
+  <meta charset="utf-8" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.css" rel="stylesheet" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.js"></script>
+    <script src="https://rawgit.com/gka/d3-jetpack/master/d3-jetpack.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+          rel="stylesheet">
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<! link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />
+	<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+   <style type="text/css">
+   body { font-family:  Helvetica, 'Apple Color Emoji', 'Helvetica Neue'; font-weight: 300;}
+    th { text-align: center; }
+    th, td { padding: 0 1em 0.5ex 0;}
+    th.center, td.center { text-align: center; }
+    th.num, td.num { text-align: right; }
+   html {
+   -ms-text-size-adjust: 100%; 
+   -webkit-text-size-adjust: 100%;
+   }
+   #chart svg {
+  font-size: 50px;
+   }
+    textarea {
+    font-size: 16pt;
+    font-family:  Arial;
+    }
+    svg text {
+     font: normal 50px Impact;
+    }
+    div text {
+     font: normal 50px Impact;
+    }
+    .nv-label text{
+    font-size: 50px;
+    }
+    ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+   }
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: red;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+    </style> 
+  <script type=text/javascript>
+	$(function() {
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        window['range'] = start.format('MMMM D, YYYY, HH, mm') + ' - ' + end.format('MMMM D, YYYY, HH, mm')
+        make_graph() //call make_graph function
+       // $.getJSON('/_report_range', {
+       //daterange:start.format('MMMM D, YYYY, HH') + ' - ' + end.format('MMMM D, YYYY, HH')});
+    }
+    cb(moment().subtract(31, 'days'), moment());
+    $('#reportrange').daterangepicker({
+        timePicker: true,
+        timePickerIncrement: 30,
+        ranges: {
+           'Today': [ moment().subtract(1, 'days').endOf('day'), moment()],
+           'Yesterday': [ moment().subtract(2, 'days').endOf('day'), moment().subtract(1, 'days').endOf('day')],
+           'Last Hour': [moment().subtract(1, 'hours'), moment()],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+           'Last Year':[moment().subtract(1, 'year'), moment()]
+        }
+    }, cb);
+	});
+  </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+<ul>
+  <li><a class="active" href="/">Emojisaurus</a></li>
+  <li><a href="/skin">Emoji Skins</a></li>
+  <li><a href="/stats">Emoji Stats</a></li>
+  <li><a href="/emoji_context">Emoji Context</a></li>
+  <li><a href="/emojify">Emojify</a></li>
+  <li><a href="/emoji_art">Emoji Art</a></li>
+  <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 13px 13px; border: 1px solid #ccc; width: 36%">
+    		<b>Time Range: </b> <i id="range" class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+    		<span id ="dateinput"></span> <b class="caret"></b>
+			</div>
+</ul>
+        <h3 class="text-muted">Emojisaurus 🦄  <font size="2">The Emoji Thesaurus </font></h3>
+      <hr/>
+      <p>
+       <label for="pattern_type"
+          style="display: inline-block; width: 146px; text-align: right">
+        Enter word or phrase:
+      </label>
+    <input type = "text"
+       id = "word"
+       value = "Summer"
+      onkeypress="if (event.keyCode==13){make_graph()};"
+      />
+    <label for="lang"
+          style="display: inline-block; width: 140px; text-align: right">
+        Select Language
+     </label>
+		<select id="user_lang" name="user[lang]" onchange="update_url()">
+		  <option value="all">All</option>
+		  <option value="id">Bahasa Indonesia - Indonesian</option>
+		  <option value="msa">Bahasa Melayu - Malay</option>
+		  <option value="ca">Català - Catalan</option>
+		  <option value="cs">Čeština - Czech</option>
+		  <option value="da">Dansk - Danish</option>
+		  <option value="de">Deutsch - German</option>
+		  <option value="en" selected="">English</option>
+		  <option value="en-gb">English UK - British English</option>
+		  <option value="es">Español - Spanish</option>
+		  <option value="eu">Euskara - Basque (beta)</option>
+		  <option value="fil">Filipino</option>
+		  <option value="fr">Français - French</option>
+		  <option value="ga">Gaeilge - Irish (beta)</option>
+		  <option value="gl">Galego - Galician (beta)</option>
+		  <option value="hr">Hrvatski - Croatian</option>
+		  <option value="it">Italiano - Italian</option>
+		  <option value="xx-lc">LOLCATZ - Lolcat (beta)</option>
+		  <option value="hu">Magyar - Hungarian</option>
+		  <option value="nl">Nederlands - Dutch</option>
+		  <option value="no">Norsk - Norwegian</option>
+		  <option value="pl">Polski - Polish</option>
+		  <option value="pt">Português - Portuguese</option>
+		  <option value="ro">Română - Romanian</option>
+		  <option value="sk">Slovenčina - Slovak</option>
+		  <option value="fi">Suomi - Finnish</option>
+		  <option value="sv">Svenska - Swedish</option>
+		  <option value="vi">Tiếng Việt - Vietnamese</option>
+		  <option value="tr">Türkçe - Turkish</option>
+		  <option value="el">Ελληνικά - Greek</option>
+		  <option value="bg">Български език - Bulgarian</option>
+		  <option value="ru">Русский - Russian</option>
+		  <option value="sr">Српски - Serbian</option>
+		  <option value="uk">Українська мова - Ukrainian</option>
+		  <option value="he">עִבְרִית - Hebrew</option>
+		  <option value="ur">اردو - Urdu (beta)</option>
+		  <option value="ar">العربية - Arabic</option>
+		  <option value="fa">فارسی - Persian</option>
+		  <option value="mr">मराठी - Marathi</option>
+		  <option value="hi">हिन्दी - Hindi</option>
+		  <option value="bn">বাংলা - Bengali</option>
+		  <option value="gu">ગુજરાતી - Gujarati</option>
+		  <option value="ta">தமிழ் - Tamil</option>
+		  <option value="kn">ಕನ್ನಡ - Kannada</option>
+		  <option value="zh-tw">繁體中文 - Traditional Chinese</option><option value="th">ภาษาไทย - Thai</option>
+		  <option value="ko">한국어 - Korean</option>
+		  <option value="ja">日本語 - Japanese</option>
+		  <option value="zh-cn">简体中文 - Simplified Chinese</option>
+		</select>
+	</p>
+	<p>
+    <label for="pattern_type"
+          style="display: inline-block; width: 140px; text-align: right">
+        Pattern Type
+     </label>
+      <select id="pattern_type" onchange="update_url()">
+        <option value="single">Single Emojis</option>
+        <option value="string">Emoji Strings</option>
+        <option value="pattern">Emoji Patterns</option>
+        <option value="all">All</option>
+      </select>
+    <label for="face_select"
+          style="display: inline-block; width: 140px; text-align: right">
+        Face Filter
+      </label>
+      <select id="face_filter" onchange="update_url()">
+        <option value="off">Include Faces</option>
+        <option value="on">Remove Faces</option>
+      </select>
+    <label for="freq_select"
+          style="display: inline-block; width: 140px; text-align: right">
+        Text Filter
+      </label>
+      <select id="freq_filter" onchange="update_url()">
+        <option value="all">All in Tweet</option>
+        <option value="freq">Most Frequent in Tweet</option>
+        <option value="surr">Surrounding Text</option>
+      </select>
+     </p>
+     
+    <div id="piechart" style="float:left;"><svg style="width:575px;height:575px" viewBox="0 0 575 575"
+  preserveAspectRatio=""xMidYMid"></svg></div>
+    <div id="table" style="font-size:16pt"></div>
+
+<script>
+//initiallize search window to past 1 month
+window['range']=moment().subtract(31, 'days').format('MMMM D, YYYY, HH, mm') + ' - ' + moment().format('MMMM D, YYYY, HH, mm')
+
+// the table rows
+    // column definitions
+    var columns = [
+        { head: 'Rank', cl: 'center', html: ƒ('rank') },
+        { head: 'Emoji', cl: 'title', html: ƒ('label') },
+        { head: 'Count', cl: 'center', html: ƒ('value') },
+        { head: '%', cl: 'center', html: ƒ('percent') },
+    ];
+
+        
+//Update and make pie chart 
+
+    //var URL_BASE = "http://localhost:5000/db";
+    var URL_BASE = "/db";
+// Update graph in response to inputs 
+//this updates continuously as text is entered
+ //d3.select("#word").on("input", make_graph);
+ d3.select("#user_lang").on("input", make_graph);
+ d3.select("#pattern_type").on("input", make_graph);
+ d3.select("#freq_filter").on("input", make_graph);
+ d3.select("#face_filter").on("input", make_graph);
+ //d3.select("#reportrange").on("click", make_graph);//doesn't work on menu click, function is called in JS at top
+	
+
+// Return url to recieve csv data with query filled in from input fields
+function update_url() {
+  return URL_BASE +"?word=" + document.getElementById("word").value +
+  			"&freq_filter=" + document.getElementById("freq_filter").value + 
+  			"&face_filter=" + document.getElementById("face_filter").value +
+  			"&pattern_type=" + document.getElementById("pattern_type").value +
+  			"&user_lang=" + document.getElementById("user_lang").value +
+  			"&date_range=" + window['range'] ;
+}
+
+function commaSeparateNumber(val){
+    while (/(\d+)(\d{3})/.test(val.toString())){
+      val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+    }
+    return val;
+  }
+  
+function add(a, b) {
+    return a + b;
+}
+
+function make_graph() {
+  url = update_url()
+  
+  d3.json(url, function(error, data) {
+    var fmt = d3.format("d");
+    nv.addGraph(function() {
+        var chart = nv.models.pieChart();
+        chart.margin({top: 30, right: 60, bottom: 20, left: 20});
+        
+        var datum = data.values;
+        //var datum = data_piechart;
+
+        chart.color(d3.scale.category20c().range());
+
+    chart.tooltipContent(function(key, y, e, graph) {
+          var x = String(key);
+          var y =  String(y);
+         //var yy= +y.replace(/,/g, ''); //remove the comma and make yy an int with + 
+         //var yper = String(yper)
+         //old: var yy= parseInt(y.replace(/,/g, ''))
+              
+              //tooltip_str = '<center><b>'+x+'</b></center>' +'<center>'+ commaSeparateNumber(yy)+'</center>' +  d3.format(".1%")(yy/ysum);
+              tooltip_str = '<center><b>'+x+'</b></center>' +'<center>'+ y+'%'+'</center>' ;
+              return tooltip_str;
+              });
+        chart.showLabels(true);
+
+            chart.donut(false);
+
+       chart.showLegend(true);
+
+        chart
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.percent });
+            //y data is saved with commas at 1000 for the table format. Remove commas:
+            //.y(function(d) { return d.value.replace(/,/g, ''); });
+
+        chart.width(600);
+
+        chart.height(600);
+
+            d3.select('#piechart svg')
+            .datum(datum)
+            .transition().duration(500)
+            .attr('width', 600)
+            .attr('height', 600)
+            .style({"font-size": "50px"})
+            .call(chart);
+        
+            //increase fontsize
+            d3.selectAll(".nv-label text")
+            .attr("text-anchor", "middle")
+            .style({"font-family": 'Apple Color Emoji'});
+            //.style({"-webkit-transform": "scale(2)"});
+            //.style({"font-size": "50px"})
+            //.attr('transform', 'scale(1.5) translate(-5,0)');
+            
+            //select legend
+            d3.selectAll(".nv-legendWrap")
+            .style({"font-size": "20px"})
+            .style({"font-family": 'Apple Color Emoji'});
+            
+  
+        
+// create table
+	//Clear previous table
+	d3.selectAll("#table > *").remove();
+    var table = d3.select('#table');
+     
+    // create table header
+    var header=table.append("thead")
+        .selectAll('th');
+        
+        //header.data(data).exit().remove();
+    
+        header
+        .data(columns).enter()
+        .append('th')
+        .attr('class', ƒ('cl'))
+        .text(ƒ('head'));
+
+    // create table body
+    var body = table.append("tbody")
+        .selectAll('tr');
+        
+        //body.data(data).exit().remove();
+    
+        body
+        .data(datum).enter()
+        .append('tr')
+        .selectAll('td')
+        .data(function(row, i) {
+            return columns.map(function(c) {
+                // compute cell values for this specific row
+                var cell = {};
+                d3.keys(c).forEach(function(k) {
+                    cell[k] = typeof c[k] == 'function' ? c[k](row,i) : c[k];
+                });
+                return cell;
+            });
+        }).enter()
+        .append('td')
+        .html(ƒ('html'))
+        .attr('class', ƒ('cl'));
+
+		table.selectAll("th").style("background-color", "#D8D8D8");
+		table.selectAll("tr").style("background-color", function(d, i){
+     				if(i%2 == 1){
+     					return "#D8D8D8";
+     				}
+     			})
+
+        
+        });
+    });
+}
+make_graph();
+
+
+
+</script>
+  </body>
+</html>
