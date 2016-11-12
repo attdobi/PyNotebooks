@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.js"></script>
+    </head>
+    <body>
+        
+    <div id="target_to_spend"><svg style="width:700px;height:500px;"></svg></div>
+
+
+    <script>
+
+
+
+    data_target_to_spend=[{"values": [{"value": 1.1898797349792296, "label": "cpc"}, {"value": 1.4260496390910877, "label": "nqobile"}, {"value": 1.847651237973128, "label": "oasis"}, {"value": 2.5332248238584274, "label": "phru"}, {"value": 0.9257235664222746, "label": "sweat"}, {"value": 3.077470997675853, "label": "wrhi"}], "key": "Serie 1"}];
+
+    nv.addGraph(function() {
+        var chart = nv.models.pieChart();
+        chart.margin({top: 30, right: 60, bottom: 20, left: 60});
+        var datum = data_target_to_spend[0].values;
+
+
+    chart.tooltipContent(function(key, y, e, graph) {
+          var x = String(key);
+              var y =  String(y)  + ' cal';
+
+              tooltip_str = '<center><b>'+x+'</b></center>' + y;
+              return tooltip_str;
+              });
+        chart.showLabels(true);
+
+            chart.donut(false);
+
+    chart.showLegend(true);
+
+
+
+
+        chart
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.value });
+
+        chart.width(700);
+
+        chart.height(500);
+
+
+            d3.select('#target_to_spend svg')
+            .datum(datum)
+            .transition().duration(500)
+            .attr('width', 700)
+            .attr('height', 500)
+            .call(chart);
+
+
+        });
+
+
+
+    </script>
+
+    </body>
+</html>

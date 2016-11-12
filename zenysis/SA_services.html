@@ -8,28 +8,28 @@
     </head>
     <body>
         
-    <div id="multibarchart"><svg style="width:800px;height:400px;"></svg></div>
+    <div id="f_1_male_condoms_number_given"><svg style="width:800px;height:400px;"></svg></div>
 
 
     <script>
 
 
 
-        data_multibarchart=[{"values": [{"y": 2.5605807086849586, "x": "cpc"}, {"y": NaN, "x": "nqobile"}, {"y": 0.72851884608550843, "x": "oasis"}, {"y": 2.683589054567149, "x": "qac"}, {"y": 0.4255147879954031, "x": "sweat"}], "key": "Quarter 1", "yAxis": "1"}, {"values": [{"y": 4.2049577724869467, "x": "cpc"}, {"y": 4.7469267218895137, "x": "nqobile"}, {"y": 8.0741673650630439, "x": "oasis"}, {"y": 10.042830091103234, "x": "qac"}, {"y": 0.74149381489243771, "x": "sweat"}], "key": "Quarter 2", "yAxis": "1"}];
+        data_f_1_male_condoms_number_given=[{"values": [{"y": 72.262660585844372, "x": "cpc"}, {"y": 0.011425605341424797, "x": "qac"}, {"y": 0.97501616942574387, "x": "sweat"}], "key": "Quarter 1", "yAxis": "1"}, {"values": [{"y": 198.39789008242849, "x": "cpc"}, {"y": NaN, "x": "qac"}, {"y": 1.5673103610364554, "x": "sweat"}], "key": "Quarter 2", "yAxis": "1"}];
 
     nv.addGraph(function() {
         var chart = nv.models.multiBarChart();
 
         chart.margin({top: 30, right: 60, bottom: 20, left: 60});
 
-        var datum = data_multibarchart;
+        var datum = data_f_1_male_condoms_number_given;
 
 
 
 
 
             chart.yAxis
-                .axisLabel('number of services per $1000');
+                .axisLabel('f_1_male_condoms_number_given per $1000');
 
 
       chart.showLegend(true);
@@ -39,7 +39,7 @@
         
 
 
-        d3.select('#multibarchart svg')
+        d3.select('#f_1_male_condoms_number_given svg')
             .datum(datum)
             .transition().duration(500)
             .attr('width', 800)
