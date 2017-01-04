@@ -8,28 +8,28 @@
     </head>
     <body>
         
-    <div id="f_1_male_condoms_number_given"><svg style="width:800px;height:400px;"></svg></div>
+    <div id="e2_number_of_sex_workers_attending_creative_space_workshops"><svg style="width:800px;height:400px;"></svg></div>
 
 
     <script>
 
 
 
-        data_f_1_male_condoms_number_given=[{"values": [{"y": 72.262660585844372, "x": "cpc"}, {"y": 0.011425605341424797, "x": "qac"}, {"y": 0.97501616942574387, "x": "sweat"}], "key": "Quarter 1", "yAxis": "1"}, {"values": [{"y": 198.39789008242849, "x": "cpc"}, {"y": NaN, "x": "qac"}, {"y": 1.5673103610364554, "x": "sweat"}], "key": "Quarter 2", "yAxis": "1"}];
+        data_e2_number_of_sex_workers_attending_creative_space_workshops=[{"values": [{"y": 8.4427755152783579, "x": "cpc"}, {"y": NaN, "x": "nqobile"}, {"y": 0.71215052357312258, "x": "oasis"}, {"y": 1.889311452230815, "x": "qlac"}, {"y": 1.8316992234132636, "x": "sweat"}], "key": "Quarter 1", "yAxis": "1"}, {"values": [{"y": 5.6693634491438178, "x": "cpc"}, {"y": 6.8168906760033154, "x": "nqobile"}, {"y": 3.619389332595266, "x": "oasis"}, {"y": 4.0932559535642365, "x": "qlac"}, {"y": 2.7600841850865447, "x": "sweat"}], "key": "Quarter 2", "yAxis": "1"}];
 
     nv.addGraph(function() {
         var chart = nv.models.multiBarChart();
 
         chart.margin({top: 30, right: 60, bottom: 20, left: 60});
 
-        var datum = data_f_1_male_condoms_number_given;
+        var datum = data_e2_number_of_sex_workers_attending_creative_space_workshops;
 
 
 
 
 
             chart.yAxis
-                .axisLabel('f_1_male_condoms_number_given per $1000');
+                .axisLabel('e2 SW attending workshops per 1000(ZAR)');
 
 
       chart.showLegend(true);
@@ -39,7 +39,7 @@
         
 
 
-        d3.select('#f_1_male_condoms_number_given svg')
+        d3.select('#e2_number_of_sex_workers_attending_creative_space_workshops svg')
             .datum(datum)
             .transition().duration(500)
             .attr('width', 800)
